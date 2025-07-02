@@ -26,6 +26,9 @@ The `appsettings.json` file contains critical configuration for the API. The mos
   - `Audience`: The intended audience for the JWT.
   - `ExpiresInMinutes`: How long the JWT access token is valid (in minutes).
   - `RefreshTokenExpiresInDays`: How long refresh tokens are valid (in days).
+- **RefreshTokenCleanup**: Background process to clean up expired refresh tokens.
+  - `Enabled`: Enables or disables the cleanup process (`true` or `false`).
+  - `IntervalMinutes`: How often (in minutes) the cleanup job runs.
 - **ConnectionStrings**: Database connection details.
   - `DefaultConnection`: Connection string for SQL Server. Should include server, database name, and authentication details.
 
@@ -42,6 +45,10 @@ Example:
     "Audience": "Audience",
     "ExpiresInMinutes": 15,
     "RefreshTokenExpiresInDays": 7
+  },
+  "RefreshTokenCleanup": {
+    "Enabled": true,
+    "IntervalMinutes": 60
   },
   "ConnectionStrings": {
     "DefaultConnection": "Server=localhost;Initial Catalog=KzBarry;Integrated Security=True;"
@@ -257,5 +264,6 @@ curl -X POST https://localhost:5041/api/auth/logout \
   - `Enums/` — Enumerations
 - `Repositories/` — Data access and persistence logic
 - `Services/` — Business logic
+  - `Background/` — Background services
 - `Data/` — Database context and migrations
 - `appsettings.json` — Application configuration

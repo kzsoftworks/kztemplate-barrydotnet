@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using Microsoft.IdentityModel.Tokens;
 using KzBarry.Utils.Filters;
 using KzBarry.Utils.Helpers;
+using KzBarry.Services.Background;
 
 namespace KzBarry.Utils.Extensions
 {
@@ -41,6 +42,10 @@ namespace KzBarry.Utils.Extensions
 
             services.AddAutoMapper(typeof(Program).Assembly);
             services.AddAuthorization();
+
+            // Registrar opciones y background service para limpieza de refresh tokens
+            services.Configure<RefreshTokenCleanupOptions>(config.GetSection("RefreshTokenCleanup"));
+            services.AddHostedService<RefreshTokenCleanupService>();
 
             return services;
         }

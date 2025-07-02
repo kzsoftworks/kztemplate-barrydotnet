@@ -14,5 +14,17 @@ namespace KzBarry.Repositories
             return await _dbSet.Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.Token == token);
         }
+        public async Task<int> DeleteExpiredAsync()
+        {
+            var now = DateTime.UtcNow;
+            var expiredTokens = _dbSet.Where(r => r.Expires < now);
+            int count = await expiredTokens.CountAsync();
+            if (count > 0)
+            {
+                _dbSet.RemoveRange(expiredTokens);
+                await _context.SaveChangesAsync();
+            }
+            return count;
+        }
     }
 }
