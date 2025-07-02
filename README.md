@@ -60,8 +60,8 @@ Example:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/kzsoftworks/KzBarry.git
-   cd KzBarry
+   git clone https://github.com/kzsoftworks/kztemplate-barrydotnet.git
+   cd kztemplate-barrydotnet
    ```
 
 2. Configure the JWT keys in `appsettings.json`:
@@ -254,16 +254,40 @@ curl -X POST https://localhost:5041/api/auth/logout \
   -d '{"refreshToken":"<refresh_token>"}'
 ```
 
-## Project Structure
+## Architecture
 
-- `Controllers/` — API controllers
-- `Utils/` — Shared utilities: helpers, filters, extensions, and profiles
+The solution is organized to promote separation of concerns, extensibility, and maintainability. Below are the main architectural components:
+
+### Folder Structure
+
+- `Controllers/` — API controllers (HTTP endpoints)
+- `Utils/` — Shared utilities (extensions, filters, helpers, AutoMapper profiles)
 - `Models/`
-  - `DTOs/` — Data Transfer Objects
-  - `Entities/` — Domain entities
-  - `Enums/` — Enumerations
+  - `DTOs/` — Data Transfer Objects for requests and responses
+  - `Entities/` — Domain entities (mapped to the database)
+  - `Enums/` — Enumerations used in the domain
 - `Repositories/` — Data access and persistence logic
 - `Services/` — Business logic
   - `Background/` — Background services
 - `Data/` — Database context and migrations
 - `appsettings.json` — Application configuration
+
+### Key Components
+
+- **Exception Filter (`ApiExceptionFilter`)**: Captures and transforms unhandled exceptions into standard, readable HTTP responses. Applied globally to prevent internal details from leaking and to keep error responses consistent.
+
+- **Semi-Automatic Documentation (Swagger)**: Integrated Swagger/OpenAPI generates interactive and semi-automatic documentation for all endpoints. Common response codes and behaviors (such as standard error responses, validation errors, and authorization requirements) are automatically documented and shared across endpoints using custom filters and code conventions. This reduces repetitive work and keeps the documentation consistent and up to date. The Swagger UI allows you to test the API from the browser and visualize contracts and models.
+
+- **Generic Repository**: Implements basic CRUD methods and reduces code duplication in specific repositories. Facilitates code reuse and unit testing.
+
+- **Background Services**: Example: `RefreshTokenCleanupService`, which periodically cleans up expired refresh tokens. Fully configurable via `appsettings.json`.
+
+- **Dependency Injection**: All services, repositories, and utilities are registered in the .NET DI container, enabling easy testing, extensibility, and decoupling.
+
+- **Flexible Configuration**: Uses `appsettings.json` to define JWT keys, connection strings, background job intervals, etc. Behavior can be changed without recompiling.
+
+- **Auto Auditing for Entities**: Entities that implement the auditing interface automatically track `CreatedAt` and `UpdatedAt` timestamps. The `DataContext` applies these values on insert and update operations, ensuring consistent audit data across the system without requiring manual handling in business logic.
+
+- **AutoMapper**: Used to map between entities and DTOs, simplifying data transformation between layers.
+
+This architecture allows the solution to scale, add new features, and maintain best practices for modern .NET API development.
