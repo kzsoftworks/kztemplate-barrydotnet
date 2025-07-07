@@ -55,3 +55,4 @@ nunit-*.xml
 
 .vs/
 appsettings.Development.json
+KzBarry/appsettings.Development.json

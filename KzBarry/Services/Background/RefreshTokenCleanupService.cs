@@ -12,7 +12,7 @@ namespace KzBarry.Services.Background
     public class RefreshTokenCleanupOptions
     {
         public bool Enabled { get; set; } = true;
-        public int IntervalMinutes { get; set; } = 60;
+        public double IntervalMinutes { get; set; } = 60;
     }
 
     public class RefreshTokenCleanupService : BackgroundService

@@ -30,6 +30,11 @@ namespace KzBarry.Utils.Filters
                 _logger.LogWarning(argEx, "ArgumentException: {Message}", argEx.Message);
                 result = new ObjectResult(new { error = argEx.Message }) { StatusCode = statusCode };
                 break;
+            case UnauthorizedAccessException unauthorizedEx:
+                statusCode = (int)HttpStatusCode.Unauthorized;
+                _logger.LogWarning(unauthorizedEx, "UnauthorizedAccessException: {Message}", unauthorizedEx.Message);
+                result = new ObjectResult(new { error = unauthorizedEx.Message }) { StatusCode = statusCode };
+                break;
             case KeyNotFoundException keyNotFoundEx:
                 statusCode = (int)HttpStatusCode.NotFound;
                 _logger.LogWarning(keyNotFoundEx, "KeyNotFoundException: {Message}", keyNotFoundEx.Message);

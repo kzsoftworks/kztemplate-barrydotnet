@@ -54,11 +54,11 @@ namespace KzBarry.Services
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
             if (user == null)
-                throw new KeyNotFoundException("Invalid credentials.");
+                throw new UnauthorizedAccessException("Invalid credentials.");
 
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
             if (result == PasswordVerificationResult.Failed)
-                throw new ArgumentException("Invalid credentials.");
+                throw new UnauthorizedAccessException("Invalid credentials.");
 
             var token = _jwtHelper.GenerateToken(user);
             var refreshToken = await GenerateAndStoreRefreshToken(user);
@@ -69,7 +69,7 @@ namespace KzBarry.Services
         {
             var existingToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
             if (existingToken == null || existingToken.Expires < DateTime.UtcNow || existingToken.UserId.ToString() != userIdClaim)
-                throw new ArgumentException("Invalid or expired refresh token.");
+                throw new UnauthorizedAccessException("Invalid or expired refresh token.");
 
             _refreshTokenRepository.Remove(existingToken);
             await _refreshTokenRepository.SaveChangesAsync();
